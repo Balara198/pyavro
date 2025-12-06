@@ -1,0 +1,7 @@
+namespace node.schema;
+schema Node;
+
+record Node{
+    Node? parent = null;
+    array<Node> children;
+}

@@ -1,0 +1,19 @@
+namespace test.schema;
+schema TestSchema;
+
+@myprop({"a": true,
+         "b": null,
+         "c": [1,2,3,4],
+         "d": "DDDD"})
+@myOtherProp("alma")
+record TestSchema {
+    string field1;
+    decimal(18,2) field2;
+    /**
+    This is an array field
+    */
+    @logicalType("alma")
+    @avro.java.string("string")
+    int myLogicalType;
+    array<int> field3;
+}
