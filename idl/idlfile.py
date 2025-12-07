@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pyavro import Protocol, Schema, ParseContext
 
 class IdlFile:
@@ -23,8 +23,15 @@ class IdlFile:
         return self._main_schema
     
     def ensure_schemas_are_resolved(self):
-        # TODO: implement this
-        raise NotImplementedError()
+        if self.parse_context is not None:
+            self.parse_context.commit()
+            schemas: List[Schema] = self.parse_context.resolve_all_schemas()
+            for schema in schemas:
+                self.named_schemas[schema.get_full_name()] = schema
+            if self.main_schema is not None:
+                self.main_schema = self.parse_context.resolve(self.main_schema)
+            if self.protocol is not None:
+                raise NotImplementedError("Protocol handlin not supported yet")
     
     @property
     def protocol(self) -> Optional[Protocol]:

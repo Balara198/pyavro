@@ -2,7 +2,7 @@ from typing import Literal
 from avro import name, schema, protocol
 from antlr4 import FileStream, CommonTokenStream
 
-from core.Idlexer import IdlLexer
+from core.IdlLexer import IdlLexer
 from core.IdlParser import IdlParser
 
 class IdlConversionError(Exception):

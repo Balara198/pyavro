@@ -1,6 +1,6 @@
+from __future__ import annotations
 from enum import Enum
 from typing import Protocol, TypeVar
-from __future__ import annotations
 
 from pyavro.schema import Schema
 

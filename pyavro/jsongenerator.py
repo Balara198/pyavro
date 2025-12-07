@@ -1,6 +1,8 @@
 from json import JSONEncoder
 from typing import Union
 
+from pyavro.utils import JsonNode, JsonNull
+
 class JsonGenerator:
     def __init__(self):
         self.complete = False
@@ -80,11 +82,11 @@ class JsonGenerator:
         self.write_field_name(field_name)
         self.write_start_array()
 
-    def write_object_field(self, field_name, value):
+    def write_object_field(self, field_name, value: JsonNode):
         self.write_field_name(field_name)
         self.write(value)
     
-    def write(self, value):
+    def write(self, value: JsonNode):
         if self.complete:
             raise ValueError("Cannot write to json, as its complete")
         if isinstance(self.current_container, dict):

@@ -14,6 +14,6 @@ record TestSchema {
     */
     @logicalType("alma")
     @avro.java.string("string")
-    int myLogicalType;
+    int myLogicalType = {"some_prop": null, "other_prop": [1,2,3]};
     array<int> field3;
 }

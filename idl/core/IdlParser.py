@@ -1,12 +1,13 @@
-# Generated from ./Idl.g4 by ANTLR 4.13.2
+# Generated from Idl.g4 by ANTLR 4.13.2
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
 import sys
 if sys.version_info[1] > 5:
-	from typing import TextIO
+	from typing import TextIO, Optional, List
 else:
 	from typing.io import TextIO
+	from typing import Optional, List
 
 def serializedATN():
     return [
@@ -305,13 +306,13 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.protocol = None # ProtocolDeclarationContext
-            self.namespace = None # NamespaceDeclarationContext
-            self.mainSchema = None # MainSchemaDeclarationContext
-            self._importStatement = None # ImportStatementContext
-            self.imports = list() # of ImportStatementContexts
-            self._namedSchemaDeclaration = None # NamedSchemaDeclarationContext
-            self.namedSchemas = list() # of NamedSchemaDeclarationContexts
+            self.protocol: Optional[IdlParser.ProtocolDeclarationContext] = None
+            self.namespace: Optional[IdlParser.NamespaceDeclarationContext] = None
+            self.mainSchema: Optional[IdlParser.MainSchemaDeclarationContext] = None
+            self._importStatement: Optional[IdlParser.ImportStatementContext] = None
+            self.imports: List[IdlParser.ImportStatementContext] = list()
+            self._namedSchemaDeclaration: Optional[IdlParser.NamedSchemaDeclarationContext] = None
+            self.namedSchemas: List[IdlParser.NamedSchemaDeclarationContext] = list()
 
         def EOF(self):
             return self.getToken(IdlParser.EOF, 0)
@@ -352,12 +353,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitIdlFile" ):
                 listener.exitIdlFile(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIdlFile" ):
-                return visitor.visitIdlFile(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -457,11 +452,11 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.name = None # IdentifierContext
-            self.body = None # ProtocolDeclarationBodyContext
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self.body: Optional[IdlParser.ProtocolDeclarationBodyContext] = None
 
         def Protocol(self):
             return self.getToken(IdlParser.Protocol, 0)
@@ -494,12 +489,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitProtocolDeclaration" ):
                 listener.exitProtocolDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitProtocolDeclaration" ):
-                return visitor.visitProtocolDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -551,12 +540,12 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._importStatement = None # ImportStatementContext
-            self.imports = list() # of ImportStatementContexts
-            self._namedSchemaDeclaration = None # NamedSchemaDeclarationContext
-            self.namedSchemas = list() # of NamedSchemaDeclarationContexts
-            self._messageDeclaration = None # MessageDeclarationContext
-            self.messages = list() # of MessageDeclarationContexts
+            self._importStatement: Optional[IdlParser.ImportStatementContext] = None
+            self.imports: List[IdlParser.ImportStatementContext] = list()
+            self._namedSchemaDeclaration: Optional[IdlParser.NamedSchemaDeclarationContext] = None
+            self.namedSchemas: List[IdlParser.NamedSchemaDeclarationContext] = list()
+            self._messageDeclaration: Optional[IdlParser.MessageDeclarationContext] = None
+            self.messages: List[IdlParser.MessageDeclarationContext] = list()
 
         def LBrace(self):
             return self.getToken(IdlParser.LBrace, 0)
@@ -595,12 +584,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitProtocolDeclarationBody" ):
                 listener.exitProtocolDeclarationBody(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitProtocolDeclarationBody" ):
-                return visitor.visitProtocolDeclarationBody(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -661,7 +644,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.namespace = None # IdentifierContext
+            self.namespace: Optional[IdlParser.IdentifierContext] = None
 
         def Namespace(self):
             return self.getToken(IdlParser.Namespace, 0)
@@ -683,12 +666,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitNamespaceDeclaration" ):
                 listener.exitNamespaceDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNamespaceDeclaration" ):
-                return visitor.visitNamespaceDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -720,7 +697,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.mainSchema = None # FullTypeContext
+            self.mainSchema: Optional[IdlParser.FullTypeContext] = None
 
         def Schema(self):
             return self.getToken(IdlParser.Schema, 0)
@@ -742,12 +719,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMainSchemaDeclaration" ):
                 listener.exitMainSchemaDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMainSchemaDeclaration" ):
-                return visitor.visitMainSchemaDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -779,7 +750,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.word = None # Token
+            self.word: Optional[Token] = None
 
         def IdentifierToken(self):
             return self.getToken(IdlParser.IdentifierToken, 0)
@@ -888,12 +859,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitIdentifier" ):
                 listener.exitIdentifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIdentifier" ):
-                return visitor.visitIdentifier(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -927,8 +892,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name = None # IdentifierContext
-            self.value = None # JsonValueContext
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self.value: Optional[IdlParser.JsonValueContext] = None
 
         def At(self):
             return self.getToken(IdlParser.At, 0)
@@ -957,12 +922,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitSchemaProperty" ):
                 listener.exitSchemaProperty(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSchemaProperty" ):
-                return visitor.visitSchemaProperty(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -998,8 +957,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.importType = None # Token
-            self.location = None # Token
+            self.importType: Optional[Token] = None
+            self.location: Optional[Token] = None
 
         def Import(self):
             return self.getToken(IdlParser.Import, 0)
@@ -1029,12 +988,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitImportStatement" ):
                 listener.exitImportStatement(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitImportStatement" ):
-                return visitor.visitImportStatement(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1099,12 +1052,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitNamedSchemaDeclaration" ):
                 listener.exitNamedSchemaDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNamedSchemaDeclaration" ):
-                return visitor.visitNamedSchemaDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -1150,11 +1097,11 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.name = None # IdentifierContext
-            self.size = None # Token
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self.size: Optional[Token] = None
 
         def Fixed(self):
             return self.getToken(IdlParser.Fixed, 0)
@@ -1195,12 +1142,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFixedDeclaration" ):
                 listener.exitFixedDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFixedDeclaration" ):
-                return visitor.visitFixedDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1258,13 +1199,13 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.name = None # IdentifierContext
-            self._enumSymbol = None # EnumSymbolContext
-            self.enumSymbols = list() # of EnumSymbolContexts
-            self.defaultSymbol = None # EnumDefaultContext
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self._enumSymbol: Optional[IdlParser.EnumSymbolContext] = None
+            self.enumSymbols: List[IdlParser.EnumSymbolContext] = list()
+            self.defaultSymbol: Optional[IdlParser.EnumDefaultContext] = None
 
         def Enum(self):
             return self.getToken(IdlParser.Enum, 0)
@@ -1316,12 +1257,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitEnumDeclaration" ):
                 listener.exitEnumDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumDeclaration" ):
-                return visitor.visitEnumDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1405,10 +1340,10 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.name = None # IdentifierContext
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.name: Optional[IdlParser.IdentifierContext] = None
 
         def identifier(self):
             return self.getTypedRuleContext(IdlParser.IdentifierContext,0)
@@ -1434,12 +1369,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitEnumSymbol" ):
                 listener.exitEnumSymbol(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumSymbol" ):
-                return visitor.visitEnumSymbol(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1487,7 +1416,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.defaultSymbolName = None # IdentifierContext
+            self.defaultSymbolName: Optional[IdlParser.IdentifierContext] = None
 
         def Equals(self):
             return self.getToken(IdlParser.Equals, 0)
@@ -1509,12 +1438,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitEnumDefault" ):
                 listener.exitEnumDefault(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumDefault" ):
-                return visitor.visitEnumDefault(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1546,12 +1469,12 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.recordType = None # Token
-            self.name = None # IdentifierContext
-            self.body = None # RecordBodyContext
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.recordType: Optional[Token] = None
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self.body: Optional[IdlParser.RecordBodyContext] = None
 
         def identifier(self):
             return self.getTypedRuleContext(IdlParser.IdentifierContext,0)
@@ -1587,12 +1510,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitRecordDeclaration" ):
                 listener.exitRecordDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRecordDeclaration" ):
-                return visitor.visitRecordDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1650,8 +1567,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._fieldDeclaration = None # FieldDeclarationContext
-            self.fields = list() # of FieldDeclarationContexts
+            self._fieldDeclaration: Optional[IdlParser.FieldDeclarationContext] = None
+            self.fields: List[IdlParser.FieldDeclarationContext] = list()
 
         def LBrace(self):
             return self.getToken(IdlParser.LBrace, 0)
@@ -1676,12 +1593,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitRecordBody" ):
                 listener.exitRecordBody(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRecordBody" ):
-                return visitor.visitRecordBody(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1723,10 +1634,10 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self.fieldType = None # FullTypeContext
-            self._variableDeclaration = None # VariableDeclarationContext
-            self.variableDeclarations = list() # of VariableDeclarationContexts
+            self.doc: Optional[Token] = None
+            self.fieldType: Optional[IdlParser.FullTypeContext] = None
+            self._variableDeclaration: Optional[IdlParser.VariableDeclarationContext] = None
+            self.variableDeclarations: List[IdlParser.VariableDeclarationContext] = list()
 
         def Semicolon(self):
             return self.getToken(IdlParser.Semicolon, 0)
@@ -1761,12 +1672,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFieldDeclaration" ):
                 listener.exitFieldDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFieldDeclaration" ):
-                return visitor.visitFieldDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1821,11 +1726,11 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.fieldName = None # IdentifierContext
-            self.defaultValue = None # JsonValueContext
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.fieldName: Optional[IdlParser.IdentifierContext] = None
+            self.defaultValue: Optional[IdlParser.JsonValueContext] = None
 
         def identifier(self):
             return self.getTypedRuleContext(IdlParser.IdentifierContext,0)
@@ -1858,12 +1763,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitVariableDeclaration" ):
                 listener.exitVariableDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitVariableDeclaration" ):
-                return visitor.visitVariableDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -1921,16 +1820,16 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
-            self.returnType = None # ResultTypeContext
-            self.name = None # IdentifierContext
-            self._formalParameter = None # FormalParameterContext
-            self.formalParameters = list() # of FormalParameterContexts
-            self.oneway = None # Token
-            self._identifier = None # IdentifierContext
-            self.errors = list() # of IdentifierContexts
+            self.doc: Optional[Token] = None
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
+            self.returnType: Optional[IdlParser.ResultTypeContext] = None
+            self.name: Optional[IdlParser.IdentifierContext] = None
+            self._formalParameter: Optional[IdlParser.FormalParameterContext] = None
+            self.formalParameters: List[IdlParser.FormalParameterContext] = list()
+            self.oneway: Optional[Token] = None
+            self._identifier: Optional[IdlParser.IdentifierContext] = None
+            self.errors: List[IdlParser.IdentifierContext] = list()
 
         def LParen(self):
             return self.getToken(IdlParser.LParen, 0)
@@ -1991,12 +1890,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMessageDeclaration" ):
                 listener.exitMessageDeclaration(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMessageDeclaration" ):
-                return visitor.visitMessageDeclaration(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2105,9 +1998,9 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.doc = None # Token
-            self.parameterType = None # FullTypeContext
-            self.parameter = None # VariableDeclarationContext
+            self.doc: Optional[Token] = None
+            self.parameterType: Optional[IdlParser.FullTypeContext] = None
+            self.parameter: Optional[IdlParser.VariableDeclarationContext] = None
 
         def fullType(self):
             return self.getTypedRuleContext(IdlParser.FullTypeContext,0)
@@ -2130,12 +2023,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFormalParameter" ):
                 listener.exitFormalParameter(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFormalParameter" ):
-                return visitor.visitFormalParameter(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2193,12 +2080,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitResultType" ):
                 listener.exitResultType(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitResultType" ):
-                return visitor.visitResultType(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -2238,8 +2119,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._schemaProperty = None # SchemaPropertyContext
-            self.schemaProperties = list() # of SchemaPropertyContexts
+            self._schemaProperty: Optional[IdlParser.SchemaPropertyContext] = None
+            self.schemaProperties: List[IdlParser.SchemaPropertyContext] = list()
 
         def plainType(self):
             return self.getTypedRuleContext(IdlParser.PlainTypeContext,0)
@@ -2262,12 +2143,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFullType" ):
                 listener.exitFullType(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFullType" ):
-                return visitor.visitFullType(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2335,12 +2210,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitPlainType" ):
                 listener.exitPlainType(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPlainType" ):
-                return visitor.visitPlainType(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -2392,8 +2261,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.referenceName = None # IdentifierContext
-            self.optional = None # Token
+            self.referenceName: Optional[IdlParser.IdentifierContext] = None
+            self.optional: Optional[Token] = None
 
         def primitiveType(self):
             return self.getTypedRuleContext(IdlParser.PrimitiveTypeContext,0)
@@ -2416,12 +2285,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitNullableType" ):
                 listener.exitNullableType(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNullableType" ):
-                return visitor.visitNullableType(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2470,9 +2333,9 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.typeName = None # Token
-            self.precision = None # Token
-            self.scale = None # Token
+            self.typeName: Optional[Token] = None
+            self.precision: Optional[Token] = None
+            self.scale: Optional[Token] = None
 
         def Boolean(self):
             return self.getToken(IdlParser.Boolean, 0)
@@ -2542,12 +2405,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitPrimitiveType" ):
                 listener.exitPrimitiveType(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPrimitiveType" ):
-                return visitor.visitPrimitiveType(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -2610,7 +2467,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.elementType = None # FullTypeContext
+            self.elementType: Optional[IdlParser.FullTypeContext] = None
 
         def Array(self):
             return self.getToken(IdlParser.Array, 0)
@@ -2635,12 +2492,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitArrayType" ):
                 listener.exitArrayType(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArrayType" ):
-                return visitor.visitArrayType(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2674,7 +2525,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.valueType = None # FullTypeContext
+            self.valueType: Optional[IdlParser.FullTypeContext] = None
 
         def Map(self):
             return self.getToken(IdlParser.Map, 0)
@@ -2699,12 +2550,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitMapType" ):
                 listener.exitMapType(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMapType" ):
-                return visitor.visitMapType(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2738,8 +2583,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._fullType = None # FullTypeContext
-            self.types = list() # of FullTypeContexts
+            self._fullType: Optional[IdlParser.FullTypeContext] = None
+            self.types: List[IdlParser.FullTypeContext] = list()
 
         def Union(self):
             return self.getToken(IdlParser.Union, 0)
@@ -2773,12 +2618,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitUnionType" ):
                 listener.exitUnionType(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitUnionType" ):
-                return visitor.visitUnionType(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2851,12 +2690,6 @@ class IdlParser ( Parser ):
             if hasattr( listener, "exitJsonValue" ):
                 listener.exitJsonValue(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitJsonValue" ):
-                return visitor.visitJsonValue(self)
-            else:
-                return visitor.visitChildren(self)
-
 
 
 
@@ -2901,7 +2734,7 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.literal = None # Token
+            self.literal: Optional[Token] = None
 
         def StringLiteral(self):
             return self.getToken(IdlParser.StringLiteral, 0)
@@ -2931,12 +2764,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitJsonLiteral" ):
                 listener.exitJsonLiteral(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitJsonLiteral" ):
-                return visitor.visitJsonLiteral(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -2971,8 +2798,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._jsonPair = None # JsonPairContext
-            self.jsonPairs = list() # of JsonPairContexts
+            self._jsonPair: Optional[IdlParser.JsonPairContext] = None
+            self.jsonPairs: List[IdlParser.JsonPairContext] = list()
 
         def LBrace(self):
             return self.getToken(IdlParser.LBrace, 0)
@@ -3003,12 +2830,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitJsonObject" ):
                 listener.exitJsonObject(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitJsonObject" ):
-                return visitor.visitJsonObject(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -3061,8 +2882,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self.name = None # Token
-            self.value = None # JsonValueContext
+            self.name: Optional[Token] = None
+            self.value: Optional[IdlParser.JsonValueContext] = None
 
         def Colon(self):
             return self.getToken(IdlParser.Colon, 0)
@@ -3084,12 +2905,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitJsonPair" ):
                 listener.exitJsonPair(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitJsonPair" ):
-                return visitor.visitJsonPair(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 
@@ -3121,8 +2936,8 @@ class IdlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._jsonValue = None # JsonValueContext
-            self.jsonValues = list() # of JsonValueContexts
+            self._jsonValue: Optional[IdlParser.JsonValueContext] = None
+            self.jsonValues: List[IdlParser.JsonValueContext] = list()
 
         def LBracket(self):
             return self.getToken(IdlParser.LBracket, 0)
@@ -3153,12 +2968,6 @@ class IdlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitJsonArray" ):
                 listener.exitJsonArray(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitJsonArray" ):
-                return visitor.visitJsonArray(self)
-            else:
-                return visitor.visitChildren(self)
 
 
 

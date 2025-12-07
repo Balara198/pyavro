@@ -1,10 +1,12 @@
-from typing import Any, Callable, Deque, Optional
-from jsongenerator import JsonGenerator
 from __future__ import annotations
+from typing import Callable, Deque, Optional
+
+from pyavro.jsongenerator import JsonGenerator
+from pyavro.utils import JsonNode
 
 class JsonProperties:
 
-    def __init__(self, reserved: str[str], prop_map: Optional[dict[str, Any]] = None):
+    def __init__(self, reserved: str[str], prop_map: Optional[dict[str, JsonNode]] = None):
         # self.prop_order: Deque[tuple[str, Any]] = Deque()
         self.reserved = reserved
         self.props = {}
@@ -18,11 +20,15 @@ class JsonProperties:
         for key, value in properties.props.items():
             self.add_prop(key, value)
 
-    def add_prop(self, name: str, value: Any):
+    def add_prop(self, name: str, value: JsonNode):
         if name in self.reserved:
             raise ValueError(f"Can't set reserved property: {name}")
         if self.props.setdefault(name, value) != value:
             raise ValueError(f"Can't overwrite property: {name}")
+        
+    def get_prop(self, name: str) -> JsonNode:
+        value = self.props.get(name)
+        return None if not isinstance(value, str) else value
         
     def __contains__(self, key):
         return key in self.props
@@ -33,7 +39,7 @@ class JsonProperties:
     def __len__(self):
         return len(self.props)
     
-    def for_each_property(self, consumer: Callable[[str, Any], None]):
+    def for_each_property(self, consumer: Callable[[str, JsonNode], None]):
         for key, value in self.props:
             consumer(key, value)
 

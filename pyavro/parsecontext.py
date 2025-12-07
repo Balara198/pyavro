@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Set
 from pyavro.namevalidator import UTF_VALIDATOR, NameValidator
 from pyavro.schema import Schema, Type
-from pyavro.util.schemaresolver import ResolvingVisitor, SchemaResolver
+from pyavro.util import schemaresolver
 from pyavro.util.schemas import Schemas
 from pyavro.utils import require_not_none
 
@@ -23,13 +23,13 @@ class ParseContext:
 
 
     def __init__(self,
-                 name_validator: Optional[NameValidator],
-                 old_schemas: Optional[Dict[str, Schema]],
-                 new_schemas: Optional[Dict[str, Schema]]):
+                 name_validator: Optional[NameValidator] = None,
+                 old_schemas: Optional[Dict[str, Schema]] = None,
+                 new_schemas: Optional[Dict[str, Schema]] = None):
         self.name_validator = name_validator or UTF_VALIDATOR
         self.old_schemas: Dict[str, Schema] = old_schemas or {}
         self.new_schemas: Dict[str, Schema] = new_schemas or {}
-        self.resolving_visitor: ResolvingVisitor = None
+        self.resolving_visitor: schemaresolver.ResolvingVisitor = None
 
     def __contains__(self, name: str):
         return name in self.PRIMITIVES or name in self.old_schemas or name in self.new_schemas
@@ -44,7 +44,7 @@ class ParseContext:
         if schema is None:
             schema = self.get_named_schema(name)
         
-        return schema if schema is not None else SchemaResolver.unresolved_schema(full_name)
+        return schema if schema is not None else schemaresolver.unresolved_schema(full_name)
 
     def full_name(self, name: str, namespace: str) -> str:
         if namespace is not None and '.' not in name:
@@ -105,7 +105,7 @@ class ParseContext:
         if self.resolving_visitor is None:
             saved = Schema.VALIDATE_NAMES
             Schema.VALIDATE_NAMES = self.name_validator
-            visitor = ResolvingVisitor(self.old_schemas.__getitem__)
+            visitor = schemaresolver.ResolvingVisitor(self.old_schemas.__getitem__)
             for schema in self.old_schemas.values():
                 Schemas.visit(schema, visitor)
             for name, schema in self.old_schemas.items():

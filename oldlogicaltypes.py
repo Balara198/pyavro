@@ -5,25 +5,6 @@ from typing import override
 from pyavro.logicaltype import LogicalType
 from pyavro.schema import Schema, Type
 
-class LogicalTypes:
-    DECIMAL = "decimal"
-    BIG_DECIMAL = "big-decimal"
-    DURATION = "duration"
-    UUID = "uuid"
-    DATE = "date"
-    TIME_MILLIS = "time-millis"
-    TIME_MICROS = "time-micros"
-    TIMESTAMP_MILLIS = "timestamp-millis"
-    TIMESTAMP_MICROS = "timestamp-micros"
-    TIMESTAMP_NANOS = "timestamp-nanos"
-    LOCAL_TIMESTAMP_MILLIS = "local-timestamp-millis"
-    LOCAL_TIMESTAMP_MICROS = "local-timestamp-micros"
-    LOCAL_TIMESTAMP_NANOS = "local-timestamp-nanos"
-            
-
-    def decimal(precision: int, scale: int = 0):
-        return Decimal(precision, scale)
-
 class Uuid(LogicalType):
     UUID_BYTES = 16
 
@@ -213,63 +194,83 @@ class LocalTimestampNanos(LogicalType):
         if Type != Type.LONG:
             raise ValueError("Local timestamp (nanos) can only be used with an underlying long type")
 
-def from_schema(schema: Schema, ignore_invalid: bool = False):
-    logical_type: LogicalType
-    type_name: str = schema.get_object_prop(LogicalType.LOGICAL_TYPE_PROP)
+class LogicalTypes:
+    @staticmethod
+    def from_schema(schema: Schema, ignore_invalid: bool = False):
+        logical_type: LogicalType
+        type_name: str = schema.get_object_prop(LogicalType.LOGICAL_TYPE_PROP)
 
-    if type_name is None:
-        return None
-    try:
-        match type_name:
-            case LogicalTypes.DECIMAL:
-                logical_type = Decimal.from_schema(schema)
-            case LogicalTypes.BIG_DECIMAL:
-                logical_type = BIG_DECIMAL_TYPE
-            case LogicalTypes.DURATION:
-                logical_type = DURATION_TYPE
-            case LogicalTypes.UUID:
-                logical_type = UUID_TYPE
-            case LogicalTypes.DATE:
-                logical_type = DATE_TYPE
-            case LogicalTypes.TIME_MILLIS:
-                logical_type = TIME_MILLIS_TYPE
-            case LogicalTypes.TIME_MICROS:
-                logical_type = TIME_MICROS_TYPE
-            case LogicalTypes.TIMESTAMP_MILLIS:
-                logical_type = TIMESTAMP_MILLIS_TYPE
-            case LogicalTypes.TIMESTAMP_MICROS:
-                logical_type = TIMESTAMP_MICROS_TYPE
-            case LogicalTypes.TIMESTAMP_NANOS:
-                logical_type = TIMESTAMP_NANOS_TYPE
-            case LogicalTypes.LOCAL_TIMESTAMP_MILLIS:
-                logical_type = LOCAL_TIMESTAMP_MILLIS_TYPE
-            case LogicalTypes.LOCAL_TIMESTAMP_MICROS:
-                logical_type = LOCAL_TIMESTAMP_MICROS_TYPE
-            case LogicalTypes.LOCAL_TIMESTAMP_NANOS:
-                logical_type = LOCAL_TIMESTAMP_NANOS_TYPE
-            case _:
-                logical_type = None
-            
-        if logical_type is not None:
-            logical_type.validate(schema)
-    except Exception as e:
-        print(f"Invalid logical type found: {e}")
-        if not ignore_invalid:
-            raise e
-        print(f"Ignoring invalid logical type for name: {type_name}")
-        return None
+        if type_name is None:
+            return None
+        try:
+            match type_name:
+                case LogicalTypes.DECIMAL:
+                    logical_type = Decimal.from_schema(schema)
+                case LogicalTypes.BIG_DECIMAL:
+                    logical_type = LogicalTypes.BIG_DECIMAL_TYPE
+                case LogicalTypes.DURATION:
+                    logical_type = LogicalTypes.DURATION_TYPE
+                case LogicalTypes.UUID:
+                    logical_type = LogicalTypes.UUID_TYPE
+                case LogicalTypes.DATE:
+                    logical_type = LogicalTypes.DATE_TYPE
+                case LogicalTypes.TIME_MILLIS:
+                    logical_type = LogicalTypes.TIME_MILLIS_TYPE
+                case LogicalTypes.TIME_MICROS:
+                    logical_type = LogicalTypes.TIME_MICROS_TYPE
+                case LogicalTypes.TIMESTAMP_MILLIS:
+                    logical_type = LogicalTypes.TIMESTAMP_MILLIS_TYPE
+                case LogicalTypes.TIMESTAMP_MICROS:
+                    logical_type = LogicalTypes.TIMESTAMP_MICROS_TYPE
+                case LogicalTypes.TIMESTAMP_NANOS:
+                    logical_type = LogicalTypes.TIMESTAMP_NANOS_TYPE
+                case LogicalTypes.LOCAL_TIMESTAMP_MILLIS:
+                    logical_type = LogicalTypes.LOCAL_TIMESTAMP_MILLIS_TYPE
+                case LogicalTypes.LOCAL_TIMESTAMP_MICROS:
+                    logical_type = LogicalTypes.LOCAL_TIMESTAMP_MICROS_TYPE
+                case LogicalTypes.LOCAL_TIMESTAMP_NANOS:
+                    logical_type = LogicalTypes.LOCAL_TIMESTAMP_NANOS_TYPE
+                case _:
+                    logical_type = None
+                
+            if logical_type is not None:
+                logical_type.validate(schema)
+        except Exception as e:
+            print(f"Invalid logical type found: {e}")
+            if not ignore_invalid:
+                raise e
+            print(f"Ignoring invalid logical type for name: {type_name}")
+            return None
+        
+        return logical_type
     
-    return logical_type
+    DECIMAL = "decimal"
+    BIG_DECIMAL = "big-decimal"
+    DURATION = "duration"
+    UUID = "uuid"
+    DATE = "date"
+    TIME_MILLIS = "time-millis"
+    TIME_MICROS = "time-micros"
+    TIMESTAMP_MILLIS = "timestamp-millis"
+    TIMESTAMP_MICROS = "timestamp-micros"
+    TIMESTAMP_NANOS = "timestamp-nanos"
+    LOCAL_TIMESTAMP_MILLIS = "local-timestamp-millis"
+    LOCAL_TIMESTAMP_MICROS = "local-timestamp-micros"
+    LOCAL_TIMESTAMP_NANOS = "local-timestamp-nanos"
+            
+    @staticmethod
+    def decimal(precision: int, scale: int = 0):
+        return Decimal(precision, scale)
 
-BIG_DECIMAL_TYPE = BigDecimal()
-UUID_TYPE = Uuid()
-DURATION_TYPE = Duration()
-DATE_TYPE = Date()
-TIME_MILLIS_TYPE = TimeMillis()
-TIME_MICROS_TYPE = TimeMicros()
-TIMESTAMP_MILLIS_TYPE = TimestampMillis()
-TIMESTAMP_MICROS_TYPE = TimestampMicros()
-TIMESTAMP_NANOS_TYPE = TimestampNanos()
-LOCAL_TIMESTAMP_MILLIS_TYPE = LocalTimestampMillis()
-LOCAL_TIMESTAMP_MICROS_TYPE = LocalTimestampMicros()
-LOCAL_TIMESTAMP_NANOS_TYPE = LocalTimestampNanos()
+    BIG_DECIMAL_TYPE = BigDecimal()
+    UUID_TYPE = Uuid()
+    DURATION_TYPE = Duration()
+    DATE_TYPE = Date()
+    TIME_MILLIS_TYPE = TimeMillis()
+    TIME_MICROS_TYPE = TimeMicros()
+    TIMESTAMP_MILLIS_TYPE = TimestampMillis()
+    TIMESTAMP_MICROS_TYPE = TimestampMicros()
+    TIMESTAMP_NANOS_TYPE = TimestampNanos()
+    LOCAL_TIMESTAMP_MILLIS_TYPE = LocalTimestampMillis()
+    LOCAL_TIMESTAMP_MICROS_TYPE = LocalTimestampMicros()
+    LOCAL_TIMESTAMP_NANOS_TYPE = LocalTimestampNanos()

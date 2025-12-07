@@ -1,4 +1,4 @@
-# Generated from ./Idl.g4 by ANTLR 4.13.2
+# Generated from Idl.g4 by ANTLR 4.13.2
 from antlr4 import *
 if "." in __name__:
     from .IdlParser import IdlParser
@@ -15,7 +15,6 @@ class IdlListener(ParseTreeListener):
     # Exit a parse tree produced by IdlParser#idlFile.
     def exitIdlFile(self, ctx:IdlParser.IdlFileContext):
         pass
-
 
     # Enter a parse tree produced by IdlParser#protocolDeclaration.
     def enterProtocolDeclaration(self, ctx:IdlParser.ProtocolDeclarationContext):

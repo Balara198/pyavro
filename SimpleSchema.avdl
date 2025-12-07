@@ -1,0 +1,5 @@
+schema SimpleSchema;
+
+record SimpleSchema {
+    string field1;
+}

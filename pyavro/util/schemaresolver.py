@@ -5,28 +5,67 @@ from pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
 from pyavro.utils import IdentityDict, require_not_none
 
 
-class SchemaResolver:
-    UR_SCHEMA_ATTR = "org.apache.avro.idl.unresolved.name"
-    UR_SCHEMA_NAME = "UnresolvedSchema"
-    UR_SCHEMA_NS = "org.apache.avro.compiler"
-    COUNTER = 0
+UR_SCHEMA_ATTR = "org.apache.avro.idl.unresolved.name"
+UR_SCHEMA_NAME = "UnresolvedSchema"
+UR_SCHEMA_NS = "org.apache.avro.compiler"
+COUNTER = 0
 
-    @staticmethod
-    def get_and_increment_cnt():
-        res = SchemaResolver.COUNTER
-        SchemaResolver.COUNTER += 1
-        return res
+def get_and_increment_cnt():
+    res = COUNTER
+    COUNTER += 1
+    return res
 
-    @staticmethod
-    def unresolved_schema(name: str) -> Schema:
-        schema = Schema.create_record(
-            f'{SchemaResolver.UR_SCHEMA_NAME}_{SchemaResolver.get_and_increment_cnt()}',
-            "unresolved schema", SchemaResolver.UR_SCHEMA_NS, False, [])
-        schema.add_prop(SchemaResolver.UR_SCHEMA_ATTR, name)
-        return schema
+def unresolved_schema(name: str) -> Schema:
+    schema = Schema.create_record(
+        f'{UR_SCHEMA_NAME}_{get_and_increment_cnt()}',
+        "unresolved schema", UR_SCHEMA_NS, False, [])
+    schema.add_prop(UR_SCHEMA_ATTR, name)
+    return schema
 
-def is_unresolved_schema(schema: Schema) -> bool:...
-def get_unresolved_schema_name(schema: Schema) -> str:...
+def is_unresolved_schema(schema: Schema) -> bool:
+    return (schema.type == Type.RECORD and 
+            schema.get_prop(UR_SCHEMA_ATTR) is not None and
+            schema.get_name() is not None and
+            schema.get_name().startswith(UR_SCHEMA_NAME) and 
+            schema.get_namespace() == UR_SCHEMA_NS)
+
+def get_unresolved_schema_name(schema: Schema) -> str:
+    if not is_unresolved_schema(schema):
+        raise ValueError(f"Not an unresolved schema: {schema}")
+    return schema.get_prop(UR_SCHEMA_ATTR)
+
+def is_fully_resolved_schema(schema: Schema) -> bool:
+    if is_unresolved_schema(schema):
+        return False
+    else:
+        return Schemas.visit(schema, IsResolvedSchemaVisitor())
+
+class IsResolvedSchemaVisitor(SchemaVisitor[bool]):
+
+    def __init__(self):
+        self.has_unresolved_parts: bool = False
+
+    @override
+    def visit_terminal(self, terminal: Schema) -> SchemaVisitorAction:
+        self.has_unresolved_parts = is_unresolved_schema(terminal)
+        return SchemaVisitorAction.TERMINATE if self.has_unresolved_parts else SchemaVisitorAction.CONTINUE
+
+    @override
+    def visit_non_terminal(self, non_terminal: Schema) -> SchemaVisitorAction:
+        self.has_unresolved_parts = is_unresolved_schema(non_terminal)
+        if self.has_unresolved_parts:
+            return SchemaVisitorAction.TERMINATE
+        if non_terminal.type == Type.RECORD and not non_terminal.has_fields():
+            return SchemaVisitorAction.SKIP_SUBTREE
+        return SchemaVisitorAction.CONTINUE
+
+    @override
+    def after_visit_non_terminal(self, non_terminal: Schema) -> SchemaVisitorAction:
+        return SchemaVisitorAction.CONTINUE
+
+    @override
+    def get(self) -> bool:
+        return not self.has_unresolved_parts
 
 class ResolvingVisitor(SchemaVisitor[None]):
     CONTAINER_SCHEMA_TYPES: Set[Type] = {Type.RECORD, Type.ARRAY, Type.MAP, Type.UNION}

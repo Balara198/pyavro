@@ -1,6 +1,6 @@
+from __future__ import annotations
 from abc import ABC
 from enum import Enum
-from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, override
 
 from pyavro.utils import JsonNode, JsonNull, IdentityDict
@@ -74,7 +74,7 @@ class Schema(JsonProperties):
         return RecordSchema(Name(name, namespace), doc, is_error, fields)
     
     @staticmethod
-    def create_enum(name: str, doc: str, namespace: str, values: List[str], enum_default: Optional[List[str]] = None) -> Schema:
+    def create_enum(name: str, doc: str, namespace: str, values: List[str], enum_default: Optional[str] = None) -> Schema:
         return EnumSchema(Name(name, namespace), doc, values, enum_default)
     
     @staticmethod
@@ -443,9 +443,7 @@ class Name:
         return True
 
 class Field(JsonProperties):
-    def __init__(self):
-        raise NotImplementedError()
-    
+        
     class Order(Enum):
         ASCENDING = "ascending"
         DESCENDING = "descending"

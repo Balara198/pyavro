@@ -2,8 +2,10 @@ from typing import Dict, List, Tuple, Iterator, Generic, Union, TypeAlias, TypeV
 from collections.abc import MutableMapping
 
 class JsonNull:
-    ...
+    def to_json(self):
+        return None
 
+JSON_NULL = JsonNull()
 JSON_UNSEEN = object()
 
 JsonNode: TypeAlias = Union[
