@@ -155,6 +155,7 @@ class Schema(JsonProperties):
 
     def __str__(self, 
                 known_names: Set[str] = None):
+        known_names = known_names or set()
         gen = JsonGenerator()
         self.to_json(known_names, None, gen)
         return str(gen)
@@ -466,12 +467,13 @@ class Field(JsonProperties):
 
     @staticmethod
     def create(field: Field, schema: Schema) -> Field:
-        new_field = Field(field.name,
-                                    schema, 
-                                    field.doc, 
-                                    field.default_value, 
-                                    True,
-                                    field.order)
+        new_field = Field(
+            field.name,
+            schema, 
+            field.doc, 
+            field.default_value, 
+            True,
+            field.order)
         new_field.add_all_props(field)
         if field._aliases != None:
             new_field._aliases = field._aliases.copy()
@@ -553,10 +555,10 @@ class NamedSchema(Schema, ABC):
     
     def write_name_ref(self, known_names: Set[str], current_namespace: str, gen: JsonGenerator):
         if self.name.name is not None:
-            if self.name.full not in known_names:
-                known_names.add(self.name.full)
+            if self.name.full in known_names:
                 gen.write_string(self.name.get_qualified(current_namespace))
                 return True
+            known_names.add(self.name.full)
         return False
     
     def write_name(self, current_namespace: str, gen: JsonGenerator):
@@ -582,7 +584,8 @@ class RecordSchema(NamedSchema):
         self._is_error = is_error
         self.fields: List[Field] = None
         self.field_map: Dict[str, Field] = None
-        self.set_fields(fields)
+        if fields is not None:
+            self.set_fields(fields)
 
     @override
     def is_error(self):
@@ -598,6 +601,7 @@ class RecordSchema(NamedSchema):
     def get_fields(self) -> List[Field]:
         if self.fields is None:
             raise ValueError("Schema fields not set yet")
+        return self.fields
         
     @override
     def has_fields(self):
@@ -671,7 +675,7 @@ class RecordSchema(NamedSchema):
             gen.write_field_name("type")
             field.schema.to_json(known_names, namespace, gen)
             if field.doc is not None:
-                gen.write_string_field("doc", self.doc)
+                gen.write_string_field("doc", field.doc)
             if field.has_default_value():
                 gen.write_field_name("default")
                 gen.write_tree(field.default_value)
@@ -683,7 +687,7 @@ class RecordSchema(NamedSchema):
                 for alias in self.aliases:
                     gen.write_string(alias)
                 gen.write_end_array()
-            field.write_props()
+            field.write_props(gen)
             gen.write_end_object()
         gen.write_end_array()
 
@@ -889,35 +893,35 @@ class SeenPair:
 
 class StringSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.STRING)
+        super().__init__(Type.STRING)
 
 class BytesSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.BYTES)
+        super().__init__(Type.BYTES)
 
 class IntSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.INT)
+        super().__init__(Type.INT)
 
 class LongSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.LONG)
+        super().__init__(Type.LONG)
 
 class FloatSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.FLOAT)
+        super().__init__(Type.FLOAT)
 
 class DoubleSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.DOUBLE)
+        super().__init__(Type.DOUBLE)
 
 class BooleanSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.BOOLEAN)
+        super().__init__(Type.BOOLEAN)
 
 class NullSchema(Schema):
     def __init__(self):
-        super().__init__(self.type.NULL)
+        super().__init__(Type.NULL)
 
 class Names(dict):
     def __init__(self, namespace: Optional[str] = None) -> None:

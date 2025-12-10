@@ -1,5 +1,6 @@
 from typing import List, Optional
 from pyavro import Protocol, Schema, ParseContext
+from pyavro.schema import RecordSchema
 
 class IdlFile:
     def __init__(self, 
@@ -15,10 +16,16 @@ class IdlFile:
         self._protocol: Protocol = protocol
         self.warnings: list[str] = warnings
 
+    def show_new_schemas(self):
+        for name, schema in self.parse_context.new_schemas.items():
+            if isinstance(schema, RecordSchema):
+                print(name, schema.name)
+
     @property
     def main_schema(self) -> Optional[Schema]:
         if self._main_schema is None:
             return None
+        # self.show_new_schemas()
         self.ensure_schemas_are_resolved()
         return self._main_schema
     
@@ -27,9 +34,9 @@ class IdlFile:
             self.parse_context.commit()
             schemas: List[Schema] = self.parse_context.resolve_all_schemas()
             for schema in schemas:
-                self.named_schemas[schema.get_full_name()] = schema
-            if self.main_schema is not None:
-                self.main_schema = self.parse_context.resolve(self.main_schema)
+                self._named_schemas[schema.get_full_name()] = schema
+            if self._main_schema is not None:
+                self._main_schema = self.parse_context.resolve(self._main_schema)
             if self.protocol is not None:
                 raise NotImplementedError("Protocol handlin not supported yet")
     
@@ -62,6 +69,6 @@ class IdlFile:
             return str(self._main_schema)
         if len(self._named_schemas) == 0:
             return "[]"
-        return '[' + ','.join(map(str, self.named_schemas.values())) + ']'
+        return '[' + ','.join(map(str, self._named_schemas.values())) + ']'
         
         

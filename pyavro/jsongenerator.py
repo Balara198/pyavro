@@ -1,7 +1,8 @@
+import inspect
 from json import JSONEncoder
 from typing import Union
 
-from pyavro.utils import JsonNode, JsonNull
+from pyavro.utils import JsonNode
 
 class JsonGenerator:
     def __init__(self):
@@ -10,14 +11,43 @@ class JsonGenerator:
         self.result = None
         self.current = []
         self.field_name = None
-        self.encoder = JSONEncoder(indent=2)
+        self.encoder = JSONEncoder(default=self.default_to_json)
+
+    def default_to_json(self, o):
+        msg = f"Object of type {o.__class__.__name__} is not JSON serializable"
+        if not hasattr(o, "to_json"):
+            raise TypeError(msg)
+        if not callable((to_json := getattr(o, "to_json"))):
+            raise TypeError(f'{msg}: to_json must be a method, not an attribute')
+        sig = inspect.signature(to_json)
+        params = list(sig.parameters.values())
+
+        if len(params) != 0:
+                raise TypeError(f'{msg}: expected params for to_json is 0, but was {len(params)}')
+        return o.to_json()
 
     def __str__(self):
         if not self.initialized:
             raise ValueError("Cannot convert empty json")
         if self.field_name is not None:
             raise ValueError("Cannot convert json, as the last object value is not set.")
-        return self.encoder.encode(self.result)
+        return self.encode(self.result, indent_level=2)
+    
+    def encode(self, x, indent_level=0):
+        if isinstance(x, dict):
+            items = []
+            for k, v in x.items():
+                items.append(
+                    " " * indent_level + self.encoder.encode(k) + ": " +
+                    self.encode(v, indent_level + 2)
+                )
+            return "{\n" + ",\n".join(items) + "\n" + " " * (indent_level - 2) + "}"
+        if isinstance(x, list):
+            if any(isinstance(e, dict) for e in x):
+                inner = ",\n".join(" " * indent_level + self.encode(e, indent_level + 2) for e in x)
+                return "[\n" + inner + "\n" + " " * (indent_level - 2) + "]"
+            return self.encoder.encode(x)
+        return self.encoder.encode(x)
 
     @property
     def current_container(self):

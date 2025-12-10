@@ -1,6 +1,6 @@
 from typing import Callable, Set, override
 from pyavro.schema import Field, Schema, Type
-from pyavro.util.schemas import Schemas
+from pyavro.util import schemas
 from pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
 from pyavro.utils import IdentityDict, require_not_none
 
@@ -11,6 +11,7 @@ UR_SCHEMA_NS = "org.apache.avro.compiler"
 COUNTER = 0
 
 def get_and_increment_cnt():
+    global COUNTER
     res = COUNTER
     COUNTER += 1
     return res
@@ -38,7 +39,7 @@ def is_fully_resolved_schema(schema: Schema) -> bool:
     if is_unresolved_schema(schema):
         return False
     else:
-        return Schemas.visit(schema, IsResolvedSchemaVisitor())
+        return schemas.visit(schema, IsResolvedSchemaVisitor())
 
 class IsResolvedSchemaVisitor(SchemaVisitor[bool]):
 
@@ -79,7 +80,7 @@ class ResolvingVisitor(SchemaVisitor[None]):
     def visit_terminal(self, terminal: Schema) -> SchemaVisitorAction:
         _type = terminal.type
         if _type in self.CONTAINER_SCHEMA_TYPES:
-            if terminal in self.replace:
+            if terminal not in self.replace:
                 raise ValueError(f"Schema {terminal} must be already processed")
         else:
             self.replace[terminal] = terminal
@@ -94,21 +95,19 @@ class ResolvingVisitor(SchemaVisitor[None]):
                 resolved_schema = self.symbol_table(unresolved_schema_name)
                 if resolved_schema is None:
                     raise ValueError(f"Undefined schema : {unresolved_schema_name}")
-                replacement = self.replace.setdefault(
-                    resolved_schema,
-                    self.visit_and_replace(resolved_schema))
+                
+                replacement = self.replace.get(resolved_schema)
+                if replacement is None:
+                    schemas.visit(resolved_schema, self)
+                    replacement = self.replace.get(resolved_schema)
+                    self.replace[resolved_schema] = replacement
                 self.replace[non_terminal] = replacement
             else:
-                self.replace(non_terminal, Schema.create_record(
+                self.replace[non_terminal] = Schema.create_record(
                     non_terminal.get_name(), non_terminal.get_doc(), 
                     non_terminal.get_namespace(), non_terminal.is_error()
-                ))
+                )
         return SchemaVisitorAction.CONTINUE
-                
-                
-    def visit_and_replace(self, schema: Schema):
-        Schemas.visit(schema, self)
-        return self.replace.get(schema)
     
     def copy_properties(self, first: Schema, second: Schema):
         if first.logical_type is not None:
@@ -132,7 +131,8 @@ class ResolvingVisitor(SchemaVisitor[None]):
                         fields = non_terminal.get_fields()
                         new_fields = []
                         for field in fields:
-                            new_fields.append(Field(field, self.replace.get(field.schema)))
+                            # new_fields.append(Field(field, self.replace.get(field.schema)))
+                            new_fields.append(Field.create(field, self.replace.get(field.schema)))
                         new_schema.set_fields(new_fields)
                         self.copy_properties(non_terminal, new_schema)
                 return SchemaVisitorAction.CONTINUE

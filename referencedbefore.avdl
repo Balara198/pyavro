@@ -1,11 +1,19 @@
 namespace hu.erste;
 schema ComplexRecord;
 
+enum SampleEnum { ONE, TWO, THREE } = ONE;
 
 /** A top-level record with inline records and advanced features */
 record ComplexRecord {
   string id;
 
   /** Inline record for metadata */
-  record Nested {string key;} metadata;
+  Nested metadata;
+  Nested? optionalMetadata = null;
+}
+
+record Nested {
+  string name;
+  SampleEnum enumField = BIG;
+  
 }

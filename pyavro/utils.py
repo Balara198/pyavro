@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Iterator, Generic, Union, TypeAlias, TypeVar
+from typing import Deque, Dict, List, Tuple, Iterator, Generic, Union, TypeAlias, TypeVar
 from collections.abc import MutableMapping
 
 class JsonNull:
@@ -9,7 +9,6 @@ JSON_NULL = JsonNull()
 JSON_UNSEEN = object()
 
 JsonNode: TypeAlias = Union[
-    None,
     JsonNull,
     str,
     int,
@@ -95,6 +94,74 @@ class IdentityDict(MutableMapping[K, V], Generic[K, V]):
             if ov is Ellipsis or ov != v:
                 return False
         return True
+
+class Stack(Deque[T], Generic[T]):
+    """
+    Simple stack implementation using Deque as the underlying storage.
+    """
+    def is_empty(self) -> bool:
+        """
+        Checks if the stack is empty.
+
+        :return: True if the stack is empty, False otherwise.
+        :rtype: bool
+        """
+        return len(self) == 0
+    def push(self, item: T) -> None:
+        """
+        Pushes an item onto the top of the stack.
+        
+        :param item: The item to be pushed onto the stack.
+        :type item: T
+        """
+        self.append(item)
+
+    def pop(self) -> T:
+        """
+        Removes and returns the top item of the stack.
+
+        :return: The top item of the stack.
+        :rtype: T
+        """
+        return super().pop()
+
+    def peek(self) -> T | None:
+        """
+        Retrieves but does not remove the top item of the stack or returns None if the stack is empty.
+
+        :return: The top item of the stack or None if the stack is empty.
+        :rtype: T | None
+        """
+        return self[-1] if len(self) > 0 else None
+    
+    def element(self) -> T:
+        """
+        Retrieves but does not remove the top item of the stack.
+        Raises IndexError if the stack is empty.
+
+        :return: The top item of the stack.
+        :rtype: T
+        """
+        if len(self) == 0:
+            raise IndexError("Stack is empty")
+        return self[-1]
+    
+    def poll(self) -> T | None:
+        """
+        Retrieves and removes the top item of the stack or returns None if the stack is empty.
+
+        :return: The top item of the stack or None if the stack is empty.
+        :rtype: T | None
+        """
+        return self.pop() if len(self) > 0 else None
+    
+    # Other Deque methods are inherited but cannot be used to violate stack semantics.
+    def appendleft(self, x):
+        raise NotImplementedError("appendleft is not supported in Stack")
+    def popleft(self):
+        raise NotImplementedError("popleft is not supported in Stack")
+    def extendleft(self, iterable):
+        raise NotImplementedError("extendleft is not supported in Stack")
 
 def require_not_none(value: T, message = "Null pointer exception") -> T:
     if value is None:

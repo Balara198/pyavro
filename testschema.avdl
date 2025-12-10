@@ -7,13 +7,18 @@ schema TestSchema;
          "d": "DDDD"})
 @myOtherProp("alma")
 record TestSchema {
+    @checkListProps({
+        "stringList": ["one", "two", "three"],
+        "objectList": [{"key1": "value1"}, {"key2": "value2"}],
+        "listList": [[1,2], [3,4], [5,6]],
+        "mixedList": [1, "two", {"key": "value"}, [7,8]]
+    })
     string field1;
     decimal(18,2) field2;
+    @logicalType("alma")
+    int myLogicalType;
     /**
     This is an array field
     */
-    @logicalType("alma")
-    @avro.java.string("string")
-    int myLogicalType = {"some_prop": null, "other_prop": [1,2,3]};
     array<int> field3;
 }

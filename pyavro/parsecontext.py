@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Set
 from pyavro.namevalidator import UTF_VALIDATOR, NameValidator
 from pyavro.schema import Schema, Type
 from pyavro.util import schemaresolver
-from pyavro.util.schemas import Schemas
+from pyavro.util import schemas
 from pyavro.utils import require_not_none
 
 class ParseContext:
@@ -36,7 +36,7 @@ class ParseContext:
 
     def find(self, name: str, namespace: Optional[str]) -> Schema:
         _type = self.PRIMITIVES.get(name)
-        if _type is None:
+        if _type is not None:
             return Schema.create(_type)
         
         full_name = self.full_name(name, namespace)
@@ -107,7 +107,7 @@ class ParseContext:
             Schema.VALIDATE_NAMES = self.name_validator
             visitor = schemaresolver.ResolvingVisitor(self.old_schemas.__getitem__)
             for schema in self.old_schemas.values():
-                Schemas.visit(schema, visitor)
+                schemas.visit(schema, visitor)
             for name, schema in self.old_schemas.items():
                 self.old_schemas[name] = visitor.get_resolved(schema)
             self.resolving_visitor = visitor
@@ -120,7 +120,7 @@ class ParseContext:
             return require_not_none(self.old_schemas.get(schema.get_full_name()),
                                     f"Unknown schema: {schema.get_full_name()}")
         else:
-            Schemas.visit(schema, self.resolving_visitor)
+            schemas.visit(schema, self.resolving_visitor)
             return self.resolving_visitor.get_resolved(schema)
         
     def types_by_name(self) -> Dict[str, Schema]:

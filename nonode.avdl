@@ -1,0 +1,11 @@
+namespace node.schema;
+schema NoNode;
+
+record Element {
+    string key;
+}
+
+record NoNode {
+    Element? parent = null;
+    array<Element> children;
+}

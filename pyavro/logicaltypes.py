@@ -19,10 +19,6 @@ class LogicalTypes:
     LOCAL_TIMESTAMP_MILLIS = "local-timestamp-millis"
     LOCAL_TIMESTAMP_MICROS = "local-timestamp-micros"
     LOCAL_TIMESTAMP_NANOS = "local-timestamp-nanos"
-            
-
-    def decimal(precision: int, scale: int = 0):
-        return Decimal(precision, scale)
 
 class Uuid(LogicalType):
     UUID_BYTES = 16
@@ -33,9 +29,9 @@ class Uuid(LogicalType):
     @override
     def validate(self, schema):
         super().validate(schema)
-        if (Type != Type.STRING and Type != Type.FIXED):
+        if (schema.type != Type.STRING and schema.type != Type.FIXED):
             raise ValueError("Uuid can only be used with an underlying string or fixed type")
-        if (Type == Type.FIXED and schema.get_fixed_size() != self.UUID_BYTES):
+        if (schema.type == Type.FIXED and schema.get_fixed_size() != self.UUID_BYTES):
             raise ValueError(f"Uuid with fixed type must have a size of {self.UUID_BYTES} bytes")
 
 class Duration(LogicalType):
@@ -45,7 +41,7 @@ class Duration(LogicalType):
     @override
     def validate(self, schema):
         super().validate(schema)
-        if Type != Type.FIXED or schema.get_fixed_size() != 12:
+        if schema.type != Type.FIXED or schema.get_fixed_size() != 12:
             raise ValueError("Duration can only be used with an underlying fixed type of size 12")
 
 class Decimal(LogicalType):
@@ -56,18 +52,20 @@ class Decimal(LogicalType):
         super().__init__(LogicalTypes.DECIMAL)
         self.precision = precision
         self.scale = scale
+
     @classmethod
-    def from_schema(cls, schema: Schema) -> LogicalTypes.Decimal:
+    def create_from_schema(cls, schema: Schema) -> Decimal:
         def get_int(name):
             prop = schema.get_object_prop(name)
             if not isinstance(prop, int):
                 raise ValueError(f"Expected int {name}: {prop.__class__.__name__}")
+            return prop
         if not cls.PRECISION_PROP in schema:
             raise ValueError("Invalid decimal: missing precision")
         precision = get_int(cls.PRECISION_PROP)
         scale = 0
         if cls.SCALE_PROP in schema:
-            scale = get_int(schema)
+            scale = get_int(cls.SCALE_PROP)
         return cls(precision=precision, scale=scale)
     
     @override
@@ -75,18 +73,18 @@ class Decimal(LogicalType):
         super().add_to_schema(schema)
         schema.add_prop(self.PRECISION_PROP, self.precision)
         schema.add_prop(self.SCALE_PROP, self.scale)
-        return Schema
+        return schema
     # TODO: continue here
 
     @override
     def validate(self, schema):
         super().validate(schema)
-        if Type != Type.FIXED and Type != Type.BYTES:
+        if schema.type != Type.FIXED and schema.type != Type.BYTES:
             raise ValueError("Logical type decimal must be backed by fixed or bytes")
         if self.precision < 0:
             raise ValueError(f"Invalid decimal precision: {self.precision} (must be positive)")
         elif self.precision > self.max_precision(schema):
-            if Type == Type.FIXED:
+            if schema.type == Type.FIXED:
                 raise ValueError(f'fixed({schema.get_fixed_size()}) cannot store {self.precision} digits (max {self.max_precision(schema)})')
             else:
                 raise ValueError(f'Invalid precision for decimal backed by bytes: {self.precision} (max {self.max_precision(schema)})')
@@ -96,9 +94,9 @@ class Decimal(LogicalType):
             raise ValueError(f"Invalid decimal scale: {self.scale} (greater than precision: {self.precision})")
         
     def max_precision(self, schema: Schema) -> int:
-        if Type == Type.BYTES:
+        if schema.type == Type.BYTES:
             return 2147483647
-        if Type == Type.FIXED:
+        if schema.type == Type.FIXED:
             size: int = schema.get_fixed_size()
             return round(math.floor(math.log10(2) * (8 * size - 1)))
         return 0
@@ -120,7 +118,7 @@ class BigDecimal(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.BYTES:
+        if schema.type != Type.BYTES:
             raise ValueError("BigDecimal can only be used with an underlying bytes type")
         
 class Date(LogicalType):
@@ -130,7 +128,7 @@ class Date(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.INT:
+        if schema.type != Type.INT:
             raise ValueError("Date can only be used with an underlying int type")
 
 class TimeMillis(LogicalType):
@@ -140,7 +138,7 @@ class TimeMillis(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.INT:
+        if schema.type != Type.INT:
             raise ValueError("Time (millis) can only be used with an underlying int type")
 
 class TimeMicros(LogicalType):
@@ -150,7 +148,7 @@ class TimeMicros(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Time (micros) can only be used with an underlying long type")
 
 class TimestampMillis(LogicalType):
@@ -160,7 +158,7 @@ class TimestampMillis(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Timestamp (millis) can only be used with an underlying long type")
 
 class TimestampMicros(LogicalType):
@@ -170,7 +168,7 @@ class TimestampMicros(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Timestamp (micros) can only be used with an underlying long type")
 
 class TimestampNanos(LogicalType):
@@ -180,7 +178,7 @@ class TimestampNanos(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Timestamp (nanos) can only be used with an underlying long type")
 
 class LocalTimestampMillis(LogicalType):
@@ -190,7 +188,7 @@ class LocalTimestampMillis(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Local timestamp (millis) can only be used with an underlying long type")
 
 class LocalTimestampMicros(LogicalType):
@@ -200,7 +198,7 @@ class LocalTimestampMicros(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Local timestamp (micros) can only be used with an underlying long type")
 
 class LocalTimestampNanos(LogicalType):
@@ -210,7 +208,7 @@ class LocalTimestampNanos(LogicalType):
     @override
     def validate(self, schema: Schema):
         super().validate(schema)
-        if Type != Type.LONG:
+        if schema.type != Type.LONG:
             raise ValueError("Local timestamp (nanos) can only be used with an underlying long type")
 
 def from_schema(schema: Schema, ignore_invalid: bool = False):
@@ -222,7 +220,7 @@ def from_schema(schema: Schema, ignore_invalid: bool = False):
     try:
         match type_name:
             case LogicalTypes.DECIMAL:
-                logical_type = Decimal.from_schema(schema)
+                logical_type = Decimal.create_from_schema(schema)
             case LogicalTypes.BIG_DECIMAL:
                 logical_type = BIG_DECIMAL_TYPE
             case LogicalTypes.DURATION:
@@ -273,3 +271,5 @@ TIMESTAMP_NANOS_TYPE = TimestampNanos()
 LOCAL_TIMESTAMP_MILLIS_TYPE = LocalTimestampMillis()
 LOCAL_TIMESTAMP_MICROS_TYPE = LocalTimestampMicros()
 LOCAL_TIMESTAMP_NANOS_TYPE = LocalTimestampNanos()
+def decimal(precision: int, scale: int = 0) -> Decimal:
+    return Decimal(precision, scale)
