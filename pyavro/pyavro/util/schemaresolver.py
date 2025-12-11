@@ -1,8 +1,9 @@
 from typing import Callable, Set, override
-from pyavro.schema import Field, Schema, Type
-from pyavro.util import schemas
-from pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
-from pyavro.utils import IdentityDict, require_not_none
+
+from pyavro.pyavro.schema import Field, Schema, Type
+from pyavro.pyavro.util import schemas
+from pyavro.pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
+from pyavro.pyavro.utils import IdentityDict, require_not_none
 
 
 UR_SCHEMA_ATTR = "org.apache.avro.idl.unresolved.name"

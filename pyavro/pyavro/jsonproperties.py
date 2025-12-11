@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Callable, Optional
 
-from pyavro.jsongenerator import JsonGenerator
-from pyavro.utils import JsonNode
+from pyavro.pyavro.jsongenerator import JsonGenerator
+from pyavro.pyavro.utils import JsonNode
 
 class JsonProperties:
 

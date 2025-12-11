@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "Node",
+  "namespace": "node.schema",
+  "fields": [
+    {
+      "name": "parent",
+      "type": ["null", "Node"],
+      "default": null
+    },
+    {
+      "name": "children",
+      "type": {
+        "type": "array",
+        "items": "Node"
+      }
+    }
+  ]
+}

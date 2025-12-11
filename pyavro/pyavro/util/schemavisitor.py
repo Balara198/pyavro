@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Protocol, TypeVar
 
-from pyavro.schema import Schema
+from pyavro.pyavro.schema import Schema
 
 T = TypeVar("T", covariant=True)
 

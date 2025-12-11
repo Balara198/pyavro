@@ -1,0 +1,6 @@
+schema ImportingSchema;
+import idl "node.avdl";
+
+record ImportingSchema {
+    node.schema.Node nodefield;
+}

@@ -2,7 +2,7 @@ import inspect
 from json import JSONEncoder
 from typing import Union
 
-from pyavro.utils import JsonNode
+from pyavro.pyavro.utils import JsonNode
 
 class JsonGenerator:
     def __init__(self):

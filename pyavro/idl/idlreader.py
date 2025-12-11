@@ -1,22 +1,22 @@
 from __future__ import annotations
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set, TextIO
 import unicodedata
 import regex
-from antlr4 import CommonTokenStream, FileStream, Token, ParserRuleContext
+from antlr4 import CommonTokenStream, InputStream, Token, ParserRuleContext
 from antlr4.error.ErrorListener import ErrorListener
 
-from idl.core.IdlLexer import IdlLexer
-from idl.idlfile import IdlFile
-from idl.core.IdlListener import IdlListener
-from idl.core.IdlParser import IdlParser
+from pyavro.idl.core.IdlLexer import IdlLexer
+from pyavro.idl.idlfile import IdlFile
+from pyavro.idl.core.IdlListener import IdlListener
+from pyavro.idl.core.IdlParser import IdlParser
 
-from pyavro import Protocol, Schema, ParseContext, JsonProperties
-from pyavro.logicaltype import LogicalType
-from pyavro import logicaltypes
-from pyavro.schema import Field, Type
-from pyavro.util import schemaresolver
-from pyavro.utils import JSON_NULL, JsonNode, Stack
+from pyavro.pyavro import Protocol, Schema, ParseContext, JsonProperties
+from pyavro.pyavro.logicaltype import LogicalType
+from pyavro.pyavro import logicaltypes
+from pyavro.pyavro.schema import Field, Type
+from pyavro.pyavro.util import schemaresolver
+from pyavro.pyavro.utils import JSON_NULL, JsonNode, Stack
 
 try:
     from typing import override
@@ -70,13 +70,16 @@ class IdlReader:
     def named_schema_or_unresolved(self, full_name: str) -> Schema:
         return self.parse_context.find(full_name, None)
     
-    def parse(self, location: Path) -> IdlFile:
+    def parse_from_path(self, path: Path):
+        with open(path, 'r') as f:
+            return self.parse(f, path.parent)
+
+    def parse(self, input_stream: TextIO, input_dir: Optional[Path]) -> IdlFile:
         # TODO: implement reading from stdin
-        self.read_locations.add(location)
-        input_dir = location.parent
+        if input_dir is not None:
+            self.read_locations.add(input_dir)
         
-        input_stream = FileStream(location)
-        lexer = IdlLexer(input_stream)
+        lexer = IdlLexer(InputStream(input_stream.read()))
         token_stream = CommonTokenStream(lexer)
 
         parse_listener = self.IdlParserListener(input_dir, token_stream, self.parse_context, self)
@@ -115,7 +118,6 @@ class IdlReader:
         return exception
     
     class IdlParserListener(IdlListener):
-
         def __init__(self, 
                      input_dir: Path, 
                      token_stream: CommonTokenStream,
@@ -123,6 +125,7 @@ class IdlReader:
                      idl_reader: IdlReader):
             self.idl_reader = idl_reader
             self.parse_context = parse_contex
+            self.read_locations = self.idl_reader.read_locations
 
             self.input_dir = input_dir
             self.token_stream = token_stream
@@ -256,8 +259,30 @@ class IdlReader:
         @override
         def exitImportStatement(self, ctx: IdlParser.ImportStatementContext):
             import_file = self.get_string(ctx.location)
-            raise NotImplementedError()
-        
+            import_location: Path = self.find_import(import_file)
+            if import_location in self.read_locations:
+                return
+            self.read_locations.add(import_location)
+
+            match ctx.importType.type:
+                case IdlParser.IDL:
+                    idl_file = self.idl_reader.parse_from_path(import_location)
+                    if (self.protocol is not None and idl_file.protocol is not None):
+                        # self.protocol.messages.update(idl_file.protocol.messages)
+                        ...
+                    self.warnings.extend(idl_file.get_warnings(import_file))
+                case IdlParser.Protocol:
+                    raise NotImplementedError("Protocols are not yet supported")
+                case IdlParser.Schema:
+                    raise NotADirectoryError("JsonSchemaParser not implemented yet.")
+       
+        def find_import(self, import_file: str) -> Path:
+            if self.input_dir is None:
+                raise ValueError("Cannot import file, as input_dir is None")
+            import_location = (self.input_dir / import_file).resolve()
+            if not import_location.exists():
+                raise FileNotFoundError(f"Cannot import file, as it does not exist: {import_location}")
+            return import_location.absolute()
         
         @override
         def enterFixedDeclaration(self, ctx: IdlParser.FixedDeclarationContext):
@@ -626,7 +651,7 @@ class IdlReader:
                 return type_name
             return f'{namespace}.{type_name}' if namespace else type_name
 
-        def get_string(self, string_token: Token):
+        def get_string(self, string_token: Token) -> str:
             string_literal = string_token.text
             return string_literal[1:-1]
         

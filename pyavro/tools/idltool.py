@@ -1,14 +1,15 @@
 from pathlib import Path
-from typing import Optional
-from idl.idlreader import IdlReader
+from typing import Optional, TextIO
+
+from pyavro.idl.idlreader import IdlReader
 
 
 class IdlTool:
-    def run(input_path: Path, output_path: Optional[Path] = None):
+    def run(input_stream: TextIO, output_stream: TextIO, error_stream: TextIO, input_dir: Optional[Path]):
         parser = IdlReader()
-        idl_file = parser.parse(input_path)
+        idl_file = parser.parse(input_stream, input_dir)
         for warning in idl_file.warnings:
-            print(f"Warning: {warning}")
+            error_stream.write(warning)
         m = idl_file.main_schema
         p = idl_file.protocol
 
@@ -17,10 +18,6 @@ class IdlTool:
         
         out = str(m) if m is not None else str(p)
 
-        if output_path is None:
-            print(out)
-        else:
-            with open(output_path, 'w') as f:
-                f.write(out)
+        output_stream.write(out)
         
         

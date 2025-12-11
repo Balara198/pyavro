@@ -3,14 +3,14 @@ from abc import ABC
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, override
 
-from pyavro.utils import JsonNode, JsonNull, IdentityDict
-from pyavro.namevalidator import UTF_VALIDATOR, NameValidator
+from pyavro.pyavro.utils import JsonNode, JsonNull, IdentityDict
+from pyavro.pyavro.namevalidator import UTF_VALIDATOR, NameValidator
 
 if TYPE_CHECKING:
-    from pyavro.logicaltype import LogicalType
+    from pyavro.pyavro.logicaltype import LogicalType
 
-from pyavro.jsongenerator import JsonGenerator
-from pyavro.jsonproperties import JsonProperties
+from pyavro.pyavro.jsongenerator import JsonGenerator
+from pyavro.pyavro.jsonproperties import JsonProperties
 
 class Type(Enum):
     RECORD = "record"

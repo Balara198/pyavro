@@ -1,7 +1,8 @@
 from typing import Iterable, TypeVar
-from pyavro.schema import Schema, Type
-from pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
-from pyavro.utils import IdentityDict, Stack
+
+from pyavro.pyavro.schema import Schema, Type
+from pyavro.pyavro.util.schemavisitor import SchemaVisitor, SchemaVisitorAction
+from pyavro.pyavro.utils import IdentityDict, Stack
 
 T = TypeVar("T", covariant=True)
 

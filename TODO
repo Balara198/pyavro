@@ -1,0 +1,5 @@
+- Implement error handling
+- Implement imports
+- Implement protocols
+- Implement json parsing
+- Clean stdin before parsing

@@ -1,6 +1,8 @@
+from pathlib import Path
 from typing import List, Optional
-from pyavro import Protocol, Schema, ParseContext
-from pyavro.schema import RecordSchema
+
+from pyavro.pyavro import Protocol, Schema, ParseContext
+from pyavro.pyavro.schema import RecordSchema
 
 class IdlFile:
     def __init__(self, 
