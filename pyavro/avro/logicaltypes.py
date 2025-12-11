@@ -3,8 +3,8 @@ from __future__ import annotations
 import math
 from typing import override
 
-from pyavro.pyavro.logicaltype import LogicalType
-from pyavro.pyavro.schema import Schema, Type
+from pyavro.avro.logicaltype import LogicalType
+from pyavro.avro.schema import Schema, Type
 
 class LogicalTypes:
     DECIMAL = "decimal"

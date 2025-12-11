@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional, Set
 
-from pyavro.pyavro.namevalidator import UTF_VALIDATOR, NameValidator
-from pyavro.pyavro.schema import Schema, Type
-from pyavro.pyavro.util import schemaresolver
-from pyavro.pyavro.util import schemas
-from pyavro.pyavro.utils import require_not_none
+from pyavro.avro.namevalidator import UTF_VALIDATOR, NameValidator
+from pyavro.avro.schema import Schema, Type
+from pyavro.avro.util import schemaresolver
+from pyavro.avro.util import schemas
+from pyavro.avro.utils import require_not_none
 
 class ParseContext:
 

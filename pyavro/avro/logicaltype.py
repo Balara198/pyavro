@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pyavro.pyavro.schema import Schema
+    from pyavro.avro.schema import Schema
     
 
 

@@ -11,12 +11,12 @@ from pyavro.idl.idlfile import IdlFile
 from pyavro.idl.core.IdlListener import IdlListener
 from pyavro.idl.core.IdlParser import IdlParser
 
-from pyavro.pyavro import Protocol, Schema, ParseContext, JsonProperties
-from pyavro.pyavro.logicaltype import LogicalType
-from pyavro.pyavro import logicaltypes
-from pyavro.pyavro.schema import Field, Type
-from pyavro.pyavro.util import schemaresolver
-from pyavro.pyavro.utils import JSON_NULL, JsonNode, Stack
+from pyavro.avro import Protocol, Schema, ParseContext, JsonProperties
+from pyavro.avro.logicaltype import LogicalType
+from pyavro.avro import logicaltypes
+from pyavro.avro.schema import Field, Type
+from pyavro.avro.util import schemaresolver
+from pyavro.avro.utils import JSON_NULL, JsonNode, Stack
 
 try:
     from typing import override
