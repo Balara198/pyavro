@@ -86,8 +86,8 @@ class Schema(JsonProperties):
         return MapSchema(value_type)
     
     @staticmethod
-    def create_union(types: List[Schema]) -> Schema:
-        return UnionSchema(types)
+    def create_union(types: Optional[List[Schema]] = None) -> Schema:
+        return UnionSchema(types or [])
     
     @staticmethod
     def create_fixed(name: str, doc: str, namespace: str, size: int):
@@ -684,10 +684,10 @@ class RecordSchema(NamedSchema):
                 gen.write_tree(field.default_value)
             if field.order != Field.Order.ASCENDING:
                 gen.write_string_field("order", field.order.value)
-            if field.aliases is not None and len(self.aliases) > 0:
+            if field.aliases is not None and len(field.aliases) > 0:
                 gen.write_field_name("aliases")
                 gen.write_start_array()
-                for alias in self.aliases:
+                for alias in field.aliases:
                     gen.write_string(alias)
                 gen.write_end_array()
             field.write_props(gen)
