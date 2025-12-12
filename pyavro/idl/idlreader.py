@@ -681,7 +681,7 @@ class IdlReader:
             elif self.with_order and name == "order":
                 if not isinstance(value, str):
                     raise IdlReader._error("@order(...) must contain a string value", first_value_token)
-                order_value = value.upper()
+                order_value = value.lower()
                 match order_value:
                     case Field.Order.ASCENDING.value:
                         self.order = Field.Order.ASCENDING
