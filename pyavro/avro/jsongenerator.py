@@ -96,7 +96,7 @@ class JsonGenerator:
         self.write(value)
         
     def write_number(self, value: Union[int, float]):
-        if not isinstance(value, int) or not isinstance(value, float):
+        if not isinstance(value, int) and not isinstance(value, float):
             raise ValueError(f"Cannot write number value of type: {type(value)}")
         self.write(value)
     
