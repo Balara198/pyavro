@@ -1,0 +1,130 @@
+{
+  "type": "record",
+  "name": "NewMessage",
+  "namespace": "naming",
+  "doc": "A sample record type.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "generator": "uuid-type1"
+    },
+    {
+      "name": "message",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "my-key": "my-value"
+        }
+      ],
+      "default": null,
+      "aliases": [
+        "text",
+        "msg"
+      ]
+    },
+    {
+      "name": "flags",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "enum",
+          "name": "Flag",
+          "namespace": "common",
+          "symbols": [
+            "ON",
+            "OFF",
+            "CANARY"
+          ]
+        },
+        "my-key": "my-value"
+      },
+      "order": "descending"
+    },
+    {
+      "name": "mainCounter",
+      "type": {
+        "type": "record",
+        "name": "Counter",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "flag",
+            "type": "common.Flag",
+            "doc": "Because the Flag field is defined earlier in NewMessage, it's already defined and does not need repeating below."
+          }
+        ]
+      }
+    },
+    {
+      "name": "otherCounters",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "Counter",
+          "my-key": "my-value"
+        }
+      ],
+      "doc": "A list of counters.",
+      "default": null
+    },
+    {
+      "name": "nonce",
+      "type": {
+        "type": "fixed",
+        "name": "Nonce",
+        "size": 8
+      }
+    },
+    {
+      "name": "my_date",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "my_time",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      }
+    },
+    {
+      "name": "my_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "my_number",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 12,
+        "scale": 3
+      }
+    },
+    {
+      "name": "my_dummy",
+      "type": {
+        "type": "long",
+        "logicalType": "time-micros"
+      }
+    }
+  ],
+  "version": 2,
+  "aliases": [
+    "OldMessage"
+  ]
+}
