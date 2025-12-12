@@ -1,5 +1,7 @@
 - Implement error handling
 - Implement imports
+  + avdl imports
+  - avsc imports
 - Implement protocols
 - Implement json parsing
 - Clean stdin before parsing

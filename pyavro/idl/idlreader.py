@@ -112,7 +112,7 @@ class IdlReader:
     @staticmethod
     def _error(message: str, token: Token, cause: Optional[Exception] = None) -> SchemaParseException:
         exception = SchemaParseException(
-            message + ', at line ' + token.line + ", column " + token.column
+            f"{message}, at line {token.line}, column {token.column}"
         )
         # TODO: initcause
         return exception

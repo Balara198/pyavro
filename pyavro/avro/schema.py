@@ -423,6 +423,9 @@ class Name:
     def __str__(self):
         return self.full
     
+    def __hash__(self):
+        return 0 if self.full is None else hash(self.full)
+    
     def write_name(self, current_namespace: str, gen: JsonGenerator):
         # TODO: understand this
         if self.name is not None:
